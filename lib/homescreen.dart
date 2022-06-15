@@ -1,3 +1,4 @@
+import 'package:apihttp/postservices.dart';
 import 'package:flutter/material.dart';
 class Homescreen extends StatefulWidget {
   const Homescreen({Key? key}) : super(key: key);
@@ -7,6 +8,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  PostServices _postServices = PostServices();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,12 +18,31 @@ class _HomescreenState extends State<Homescreen> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-                 Text('Http - Api'),
-            ],
+          child: Expanded(
+            child: Container(
+              child: FutureBuilder<List>(
+                future:_postServices.getPost() ,
+                builder: (context,snapshot){
+                  if(snapshot.hasData){
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                        itemBuilder: (context,index){
+                        return ListTile(
+                          title: snapshot.data![index]['id'],
+                          subtitle: snapshot.data![index]['title'],
+                        );
+                        });
+                  }else if(snapshot.hasError){
+                    return Center(child: Text(snapshot.error.toString()),);
+                  }else{
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                },
+              ),
+            ),
           ),
         ),
       ),
