@@ -15,36 +15,27 @@ class _HomescreenState extends State<Homescreen> {
       appBar: AppBar(
         title: Text('Http Api'),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: SingleChildScrollView(
-          child: Expanded(
-            child: Container(
-              child: FutureBuilder<List>(
-                future:_postServices.getPost() ,
-                builder: (context,snapshot){
-                  if(snapshot.hasData){
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                        itemBuilder: (context,index){
-                        return ListTile(
-                          title: snapshot.data![index]['id'],
-                          subtitle: snapshot.data![index]['title'],
-                        );
-                        });
-                  }else if(snapshot.hasError){
-                    return Center(child: Text(snapshot.error.toString()),);
-                  }else{
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+      body: FutureBuilder<List>(
+        future:_postServices.getPost() ,
+        builder: (context,snapshot){
+          if(snapshot.hasData){
+            return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context,index){
+                  return ListTile(
+                    title: Text(snapshot.data![index]['id'].toString()),
+                    subtitle: Text(snapshot.data![index]['title']),
+                  );
+                });
+          }else if(snapshot.hasError){
+            return Center(child: Text(snapshot.error.toString()),);
+          }else{
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-                },
-              ),
-            ),
-          ),
-        ),
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child:Icon(Icons.add),
